@@ -15,6 +15,7 @@ struct MotorConfig {
     sf::Color textColor;        // Color of the status text
     sf::Vector2f textPosition;  // Position of the status text
 };
+
 class Motor {
 private:
     bool isRunning;  // Motor status (running or stopped)

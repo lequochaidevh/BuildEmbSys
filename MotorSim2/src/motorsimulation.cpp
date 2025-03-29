@@ -1,7 +1,10 @@
-#include "motorsimulation.h"
+#include "../include/motorsimulation.h"
 #include <iostream>
 #include <thread>
 #include <chrono>
+
+struct MotorConfig; //
+
 
 // Motor class implementation
 Motor::Motor() : isRunning(false), speed(0) {}
@@ -29,17 +32,28 @@ int Motor::getSpeed() const {
 }
 
 // MotorControl class implementation
-MotorControl::MotorControl() : rotationAngle(0.0f) {
+MotorControl::MotorControl(const MotorConfig& config) : rotationAngle(0.0f) {
     // Set up motor circle
-    motorCircle.setRadius(50);
-    motorCircle.setFillColor(sf::Color::Green);
-    motorCircle.setPosition(350, 250);
+    motorCircle.setRadius(config.motorCircleRadius);
+    motorCircle.setFillColor(config.motorCircleColor);
+    motorCircle.setPosition(config.motorCirclePosition);
 
     // Set up motor shaft
-    motorShaft.setSize(sf::Vector2f(100, 5));
-    motorShaft.setFillColor(sf::Color::Black);
+    motorShaft.setSize(config.motorShaftSize);
+    motorShaft.setFillColor(config.motorShaftColor);
     motorShaft.setOrigin(0, 2);  // Origin at left center
-    motorShaft.setPosition(400, 300);  // Center of the circle
+    motorShaft.setPosition(config.motorShaftPosition);  // Center of the circle
+
+    motorCircle.setRadius(config.motorShaftSize.x);  // Use motorShaft size for motorCircle radius
+    motorCircle.setFillColor(config.motorShaftColor); // Use motorShaft color for motorCircle color
+    motorCircle.setPosition(config.motorShaftPosition); // Use motorShaft position for motorCircle position
+
+    // Set up motor shaft with motorCircle properties
+    motorShaft.setSize(sf::Vector2f(config.motorCircleRadius * 2, 5));  // Use motorCircle radius for motorShaft size (diameter)
+    motorShaft.setFillColor(config.motorCircleColor); // Use motorCircle color for motorShaft color
+    motorShaft.setOrigin(0, 2);  // Origin at left center
+    motorShaft.setPosition(config.motorCirclePosition);  // Use motorCircle position for motorShaft position
+
 
     // Load font and set up status text
     if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {
@@ -47,11 +61,13 @@ MotorControl::MotorControl() : rotationAngle(0.0f) {
         exit(-1);
     }
     statusText.setFont(font);
-    statusText.setCharacterSize(24);
-    statusText.setFillColor(sf::Color::White);
-    statusText.setPosition(10, 10);
+    statusText.setCharacterSize(config.fontSize);
+    statusText.setFillColor(config.textColor);
+    statusText.setPosition(config.textPosition);
     statusText.setString("Motor is stopped.\nSpeed: 0%");
-}
+
+    // Rest of the class remains the same as before...
+};
 
 void MotorControl::handleEvents(sf::RenderWindow& window) {
     sf::Event event;
@@ -87,8 +103,8 @@ void MotorControl::handleEvents(sf::RenderWindow& window) {
 void MotorControl::update() {
     // Update status text
     std::string statusMessage = motor.getIsRunning() ?
-        "Motor is running.\nSpeed: " + std::to_string(motor.getSpeed()) + "%" :
-        "Motor is stopped.\nSpeed: " + std::to_string(motor.getSpeed()) + "%";
+                "Motor is running.\nSpeed: " + std::to_string(motor.getSpeed()) + "%" :
+                "Motor is stopped.\nSpeed: " + std::to_string(motor.getSpeed()) + "%";
     statusText.setString(statusMessage);
 
     // Update motor shaft rotation
