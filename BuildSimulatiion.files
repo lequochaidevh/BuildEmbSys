@@ -1,0 +1,8 @@
+MotorSim/CMakeLists.txt
+MotorSim/README.md
+README.md
+SimulationBuilder.creator.user
+tools/script/SetupCMakePrj/README.md
+tools/script/SetupCMakePrj/create_cmake.sh
+tools/script/SetupCMakePrj/create_project.sh
+tools/script/SetupCMakePrj/templCmakeAll.txt

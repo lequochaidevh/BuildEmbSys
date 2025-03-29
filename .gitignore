@@ -1,0 +1,36 @@
+# Các tệp build và thư mục không cần thiết
+build/
+bin/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.cmake
+
+# Các tệp của IDE
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Các tệp tạm thời
+*.log
+*.tmp
+*.bak
+
+# Các tệp biên dịch
+*.o
+*.obj
+*.out
+*.exe
+
+# Thư mục của thư viện SFML và các thư viện bên ngoài khác
+/lib/
+*.lib
+*.dll
+
+# Các tệp nhị phân của hệ điều hành
+.DS_Store
+Thumbs.db
+
