@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
+#include <cmath>
 // Lớp cha: ParentShape
 class ParentShape {
 public:
@@ -43,7 +44,6 @@ public:
     sf::RectangleShape shape;
     sf::Vector2f m_center;
     sf::Vector2f rotationPoint;
-    sf::Vector2f relativePosition;
     // Constructor khởi tạo hình vuông
     Square(float s, sf::Vector2f center) : size(s) {
         shape.setSize(sf::Vector2f(size, size));
@@ -69,14 +69,53 @@ public:
     void draw(sf::RenderWindow& window) override {
         window.draw(shape);
     }
+    void rotate(float angle) override {
+        sf::Vector2f squarePosition = shape.getPosition();
+        float offsetX = squarePosition.x - rotationPoint.x;
+        float offsetY = squarePosition.y - rotationPoint.y;
+
+        // Rotate the square around the point (using the angle)
+        float radians = angle * 3.14159265f / 180.f; // Convert degrees to radians
+        float cosAngle = std::cos(radians);
+        float sinAngle = std::sin(radians);
+
+        // New position after rotation
+        float newX = rotationPoint.x + offsetX * cosAngle - offsetY * sinAngle;
+        float newY = rotationPoint.y + offsetX * sinAngle + offsetY * cosAngle;
+        shape.rotate(angle);
+        // Set the new position of the square
+        shape.setPosition(newX, newY);
+
+    }
 
     // Hàm xoay hình vuông
-    void rotate(float angle) override {
-        relativePosition = shape.getPosition() - rotationPoint;
-        shape.setOrigin(rotationPoint);
-        shape.rotate(angle);
-        shape.setPosition(rotationPoint + relativePosition);
-    }
+    //    void rotate(float angle) override {
+    //        // Calculate the offset from the rotation point to the square's center
+    //        sf::Vector2f squarePosition = shape.getPosition();
+    //        float offsetX = squarePosition.x - rotationPoint.x;
+    //        float offsetY = squarePosition.y - rotationPoint.y;
+
+    //        // Rotate the square around the point (using the angle)
+    //        float radians = angle * 3.14159265f / 180.f; // Convert degrees to radians
+    //        float cosAngle = std::cos(radians);
+    //        float sinAngle = std::sin(radians);
+
+    //        // New position after rotation
+    //        float newX = rotationPoint.x + offsetX * cosAngle - offsetY * sinAngle;
+    //        float newY = rotationPoint.y + offsetX * sinAngle + offsetY * cosAngle;
+
+    //        // Set the new position of the square
+    //        shape.setPosition(newX, newY);
+
+    //        // Rotate the square around its own center (if needed)
+    //        shape.setRotation(angle);
+    //    }
+    //    void rotate(float angle) override {
+    //        //relativePosition = shape.getPosition() - rotationPoint;
+    //        //shape.setOrigin(rotationPoint);
+    //        shape.rotate(angle);
+    //        //shape.setPosition(rotationPoint + relativePosition);
+    //    }
 };
 
 // Lớp ShapeGround chứa các hình động
@@ -127,8 +166,34 @@ public:
         shapeGround.rotate(angle);
     }
 };
+
 sf::Vector2f rotationPointGlobal;
+
 void setSquarePosition(Square &m_square, float x, float y) {
+    m_square.rotationPoint = m_square.m_center;
+    sf::Vector2f currentPosition = m_square.shape.getPosition();
+    m_square.shape.setPosition(currentPosition.x + x, currentPosition.y + y);
+}
+
+
+void setSquarePosition3(Square &m_square, float x, float y) {
+    sf::Vector2f currentPosition = m_square.m_center;
+    m_square.shape.setPosition(currentPosition.x + x, currentPosition.y );
+
+    m_square.shape.setOrigin(sf::Vector2f(0, 0));
+    //sf::Vector2f setOriginVec2f = currentPosition - m_square.shape.getPosition();
+    std::cout << "*********" << std::endl;
+
+    std::cout << m_square.shape.getOrigin().x << std::endl;
+    std::cout << m_square.shape.getOrigin().y << std::endl;
+
+    std::cout << m_square.shape.getPosition().x << std::endl;
+    std::cout << m_square.shape.getPosition().y << std::endl;
+
+    //m_square.rotationPoint = m_square.shape.getOrigin() - sf::Vector2f(x, y);
+
+}
+void setSquarePosition2(Square &m_square, float x, float y) {
     //m_square.shape.setOrigin((m_square.size - x), (m_square.size - y));
     sf::Vector2f currentPosition = m_square.shape.getPosition();
     m_square.shape.setPosition(currentPosition.x + x, currentPosition.y + y);
@@ -156,20 +221,26 @@ void setSquarePosition(Square &m_square, float x, float y) {
 
 int main() {
     // Tạo cửa sổ để hiển thị hình
-    sf::RenderWindow window(sf::VideoMode(1400, 1400), "ShapeGround Example");
+    sf::RenderWindow window(sf::VideoMode(1200, 1200), "ShapeGround Example");
 
-    Circle circle1(50.0f, sf::Vector2f(400, 300));
+    Circle circle1(100.0f, sf::Vector2f(400, 300));
     Square square1(200.0f, sf::Vector2f(400, 300));
 
     Circle circle2(100.0f, sf::Vector2f(650, 500));
+    sf::Vector2f shapeCenter;
+
+    sf::CircleShape point(5); // A small circle as the point
+    point.setFillColor(sf::Color::Black);
+    // Position the point at the center of the shape
+
     Square square21(50.0f, sf::Vector2f(650, 500));
     Square square22(50.0f, sf::Vector2f(650, 500));
     Square square23(50.0f, sf::Vector2f(650, 500));
     Square square24(50.0f, sf::Vector2f(650, 500));
     setSquarePosition(square21,50.0, 0.0);
-    setSquarePosition(square22,-50.0,0.0);
-    setSquarePosition(square23, 0.0, 50.0);
-    setSquarePosition(square24,0.0,-50.0);
+    //setSquarePosition(square22,-50.0,0.0);
+    //setSquarePosition(square23, 0.0, 50.0);
+    //setSquarePosition(square24,0.0,-50.0);
 
     // Tạo một đối tượng ShapeCollection với các hình động
     //ShapeCollection shapes(100.0f, 100.0f, sf::Vector2f(400, 300));
@@ -181,7 +252,8 @@ int main() {
     //minorVecShape2.push_back(&square22);
     //minorVecShape2.push_back(&square23);
     //minorVecShape2.push_back(&square24);
-
+    shapeCenter = square21.shape.getPosition() - square21.shape.getOrigin();
+    point.setPosition(shapeCenter - sf::Vector2f(point.getRadius(), point.getRadius()));
     ShapeGround shapeGround1(&square1, minorVecShape1);
     ShapeGround shapeGround2(&circle2, minorVecShape2);
 
@@ -213,18 +285,20 @@ int main() {
 
         // Quay hình
         shapes1.rotate(rotationSpeed);
-        //shapes2.rotate(rotationSpeed);
+        shapes2.rotate(rotationSpeed);
 
         // Vẽ tất cả các hình
         shapes1.draw(window);
         shapes2.draw(window);
 
         // Create a text object for the asterisk symbol
-        sf::Text originSymbol("*", font, 20);  // 20 is the text size
-        originSymbol.setFillColor(sf::Color::Red);  // Set the color of the symbol
-        originSymbol.setPosition(rotationPointGlobal.x, rotationPointGlobal.y);  // Position the symbol at the origin
-        window.draw(originSymbol);
+        sf::Text originSymbol("o", font, 20);  // 20 is the text size
+        //originSymbol.setFillColor(sf::Color::Red);  // Set the color of the symbol
+        //originSymbol.setPosition(rotationPointGlobal.x, rotationPointGlobal.y);  // Position the symbol at the origin
+        //window.draw(originSymbol);
         // Hiển thị các hình đã vẽ
+        window.draw(point);
+
         window.display();
     }
 
