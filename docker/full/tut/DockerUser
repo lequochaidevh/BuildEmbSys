@@ -1,0 +1,11 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && \
+    apt-get install -y sudo bash curl vim git && \
+    apt-get clean
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/bin/bash"]
