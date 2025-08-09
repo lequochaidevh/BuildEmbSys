@@ -1,0 +1,11 @@
+./CMakeLists.txt
+./core/CMakeLists.txt
+./modules/CMakeLists.txt
+./modules/graphics/CMakeLists.txt
+./tools/CMakeLists.txt
+./apps/CMakeLists.txt
+./apps/test_graphics/CMakeLists.txt
+./third_party/CMakeLists.txt
+./platform/CMakeLists.txt
+./platform/linux/CMakeLists.txt
+./testing/CMakeLists.txt

@@ -1,0 +1,13 @@
+# .gitignore
+build/
+bin/
+lib/
+*.o
+*.obj
+*.exe
+*.pdb
+*.log
+*.pyc
+__pycache__/
+.idea/
+.vscode/

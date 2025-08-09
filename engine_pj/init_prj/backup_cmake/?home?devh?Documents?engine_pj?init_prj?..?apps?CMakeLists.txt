@@ -1,0 +1,5 @@
+add_subdirectory(test_embedded)
+add_subdirectory(test_graphics)
+add_subdirectory(camera_viewer)
+add_subdirectory(ai_inference_demo)
+add_subdirectory(game_demo)
