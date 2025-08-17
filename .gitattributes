@@ -1,0 +1,5 @@
+Engines/** linguist-generated
+Engines/Vendors/** linguist-vendored
+*.h linguist-language=C++
+*.cpp linguist-language=C++
+*.sh linguist-language=Shell
