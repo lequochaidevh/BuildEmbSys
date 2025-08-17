@@ -6,7 +6,7 @@ namespace ViSolEngine
     Application::Application(const ApplicationConfiguration &config) : mConfig(config)
     {
         Logger::init();
-        CORE_LOG_INFO("Info works:");
+        CORE_LOG_INFO("Info works");
         CORE_LOG_TRACE("Trace works");
         CORE_LOG_WARN("Warn works");
         CORE_LOG_ERROR("Error works");

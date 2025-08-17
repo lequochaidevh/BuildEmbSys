@@ -3,11 +3,8 @@ project(ViSolEngine VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 
-
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
-
-
 
 file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/ViSolEngine/*.cpp CMAKE_CONFIGURE_DEPENDS)
 add_library(${PROJECT_NAME} STATIC ${SRC_FILES} )
@@ -34,7 +31,7 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC ON_VI_ENGINE DYNAMIC_LIB=0 DYN
 
 # TODO: Will delare public and private include dir
 
-# target_include_directories(${PROJECT_NAME} PUBLIC 
+# target_include_directories(${PROJECT_NAME} PUBLIC
 # 	${CMAKE_CURRENT_SOURCE_DIR}/ViSolEngine
 #     )
 #	${CMAKE_SOURCE_DIR}/Vendors/include #add file vendor
@@ -110,3 +107,7 @@ install(FILES ${CMAKE_SOURCE_DIR}/Vendors/${platform}/lib/libspdlog.a
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/Vendors/${platform}/include/spdlog
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC _DEBUG)
+endif()

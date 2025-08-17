@@ -12,18 +12,15 @@ cd "$CMAKE_ROOT_DIR" || {
     exit 1
 }
 
+# cmake --preset linux-debug
+# cmake --preset linux-debug -DCMAKE_INSTALL_PREFIX=./tmp/ViSolEngineInstall
+# cmake --build out/build/linux-debug
+# cmake --install out/build/linux-debug
+
 mkdir -p ./tmp/ViSolEngineInstall
-cmake -B build -DCMAKE_INSTALL_PREFIX="./tmp/ViSolEngineInstall"
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="./tmp/ViSolEngineInstall"
 cmake --build build
 cmake --install build
-
-# if [ ! -f "CMakeCache.txt" ]; then
-#     echo -e "${YELLOW}CMake cache not found. Running cmake to configure project...${NC}"
-#     cmake "$CMAKE_BUILD_DIR" -DCMAKE_INSTALL_PREFIX="$CMAKE_INSTALL_DIR" || {
-#         echo -e "${RED}ERROR: CMake configuration failed.${NC}"
-#         exit 1
-#     }
-# fi
 
 # core_build=$(( $(nproc) - 3 ))
 # cmake --build . --preset linux-debug -- -j "$core_build" || {
@@ -31,6 +28,18 @@ cmake --install build
 #     echo -e "${RED}ERROR: Build failed.${NC}"
 #     exit 1
 # }
+
+# cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=./tmp/ViSolEngineInstall
+# cmake --build build
+# cmake --install build
+
+# mkdir -p ./build
+# cmake -S . -B build -G Ninja \
+#     -DCMAKE_BUILD_TYPE=Debug \
+#     -DCMAKE_INSTALL_PREFIX=./tmp/ViSolEngineInstall
+
+# cmake --build build
+# cmake --install build
 
 printf "${GREEN}${BOLD}%-10sBuild completed successfully.${ENDLINE}${NC}"
 echo

@@ -17,4 +17,3 @@ printf_var "WORKSPACE_DIR"
 printf_var "CMAKE_ROOT_DIR"
 printf_var "CMAKE_BUILD_DIR"
 printf_var "CMAKE_INSTALL_DIR"
-
