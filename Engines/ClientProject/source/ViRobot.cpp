@@ -4,7 +4,6 @@
 class ViRobot : public ViSolEngine::Application {
 public:
 	ViRobot(const ViSolEngine::ApplicationConfiguration& config) : ViSolEngine::Application(config) {
-		std::cout << "ViRobot is config : ViRobot.cpp\n";
 		LOG_INFO("Info works");
 		LOG_TRACE("Trace works");
 		LOG_WARN("Warn works");
@@ -12,20 +11,21 @@ public:
 		LOG_CRITICAL("Critical works");
 	}
 	virtual bool init() override {
-		std::cout << "ViRobot is init : ViRobot.cpp\n";
+		LOG_INFO("ViRobot is init");
 		return true;
 	}
 	virtual void shutdown() override {
-		std::cout << "ViRobot is shutdown : ViRobot.cpp\n";
+		LOG_INFO("ViRobot is shutdown");
 	}
 
 };
+
 ViSolEngine::Application* ViSolEngine::createApplication() {
-	std::cout << "Start CreateApplication : ViRobot.cpp\n";
+	std::cout << "----- Start CreateApplication -----" << std::endl;
 	ViSolEngine::ApplicationConfiguration appConfig;
 	appConfig.Width = 800;
 	appConfig.Height = 600;
-	appConfig.Title = "ViSolEngine Alpha ver 1";
+	appConfig.Title = "ViSolEngine version 1.0.0";
 
 	return new ViRobot(appConfig);
 }

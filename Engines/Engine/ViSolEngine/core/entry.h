@@ -4,11 +4,10 @@
 
 
 int main() {
-	std::cout << "Main Entry.h \n";
 	ViSolEngine::Application* application = ViSolEngine::createApplication();
-	std::cout << "After CreateApplication Entry.h\n";
+	std::cout << "After Create Application" << std::endl;
 	if (application->init()) {
-		std::cout << "Init Entry.h \n";
+		LOG_INFO("Entry init");
 		application->run();
 	}
 

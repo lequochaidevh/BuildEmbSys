@@ -5,12 +5,12 @@
 #include "logger/logger.h"
 
 namespace ViSolEngine {
-	struct ApplicationConfiguration {
+	struct VISOL_API ApplicationConfiguration {
 		int Width, Height;
 		const char* Title;
 	};
 
-	class Application {
+	class VISOL_API Application {
 	public:
 		virtual ~Application() = default;
 		virtual bool init() { return true; }

@@ -28,52 +28,52 @@ template <typename T>
 using Unique = std::unique_ptr<T>;
 
 // Build share library
-#if ON_VI_ENGINE
+#if ON_VISOL_ENGINE
 #if DYNAMIC_BUILD
 #ifdef _MSC_VER
-#define VI_API __declspec(dllexport)
+#define VISOL_API __declspec(dllexport)
 #else
-#define VI_API __attribute__((visibility("default")))
+#define VIVISOL_API __attribute__((visibility("default")))
 #endif
 #else
-#define VI_API
+#define VIVISOL_API
 #endif
 #else
 #if DYNAMIC_IMPORT
 #ifdef _MSC_VER
-#define VI_API __declspec(dllimport)
+#define VISOL_API __declspec(dllimport)
 #else
-#define VI_API
+#define VISOL_API
 #endif
 #else
-#define VI_API
+#define VISOL_API
 #endif
 #endif
 
 // Runtime assert
-#define VI_ASSERT assert
+#define VISOL_ASSERT assert
 
 // Static assert when compile C2607
 #if defined(__clang__) || defined(__gcc__)
-#define VI_STATIC_ASSERT _Static_assert
+#define VISOL_STATIC_ASSERT _Static_assert
 #else
-#define VI_STATIC_ASSERT static_assert
+#define VISOL_STATIC_ASSERT static_assert
 #endif
 
 // Inline function
 #if defined(__clang__) || defined(_gcc__)
-#define VI_FORCE_INLINE __attribute__((always_inline)) inline
-#define VI_NOINLINE __attribute__((noinline))
+#define VISOL_FORCE_INLINE __attribute__((always_inline)) inline
+#define VISOL_NOINLINE __attribute__((noinline))
 #elif defined(_MSC_VER)
-#define VI_FORCE_INLINE __forceinline
-#define VI_NOINLINE __declspec(noinline)
+#define VISOL_FORCE_INLINE __forceinline
+#define VISOL_NOINLINE __declspec(noinline)
 #else
-#define VI_FORCE_INLINE inline
-#define VI_NOINLINE
+#define VISOL_FORCE_INLINE inline
+#define VISOL_NOINLINE
 #endif
 
 // Free memory
-#define VI_FREE_MEMORY(memory) \
+#define VISOL_FREE_MEMORY(memory) \
     if (memory != nullptr)     \
     {                          \
         delete memory;         \
@@ -85,16 +85,16 @@ using Unique = std::unique_ptr<T>;
 
 #define INVALID_ID 0
 
-namespace VIEngine
-{
-    using UUID = size_t;
+// namespace ViSolEngine
+// {
+//     using UUID = size_t;
 
-    UUID VI_API getUUID();
+//     UUID VI_API getUUID();
 
-    template <typename T>
-    UUID VI_API getTypeUUID()
-    {
-        static UUID uuid = getUUID();
-        return uuid;
-    }
-}
+//     template <typename T>
+//     UUID VI_API getTypeUUID()
+//     {
+//         static UUID uuid = getUUID();
+//         return uuid;
+//     }
+// }

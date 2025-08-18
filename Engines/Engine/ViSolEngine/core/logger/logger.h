@@ -10,11 +10,11 @@
 // #define _DEBUG 1
 
 namespace ViSolEngine {
-	class Logger {
+	class VISOL_API Logger {
 	public:
 		static void init();
-		static Shared<spdlog::logger> getCoreLogger() { return sCoreLogger; }
-		static Shared<spdlog::logger> getClientLogger() { return sClientLogger; }
+		static VISOL_FORCE_INLINE Shared<spdlog::logger> getCoreLogger() { return sCoreLogger; }
+		static VISOL_FORCE_INLINE Shared<spdlog::logger> getClientLogger() { return sClientLogger; }
 	private:
 		static Shared<spdlog::logger> sCoreLogger;
 		static Shared<spdlog::logger> sClientLogger;

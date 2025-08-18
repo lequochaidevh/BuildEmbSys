@@ -1,6 +1,9 @@
 #include "application.h"
 #include <spdlog/spdlog.h>
 
+#include <GLFW/glfw3.h>
+
+
 namespace ViSolEngine
 {
     Application::Application(const ApplicationConfiguration &config) : mConfig(config)

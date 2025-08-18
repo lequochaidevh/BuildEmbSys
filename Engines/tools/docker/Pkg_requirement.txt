@@ -1,0 +1,6 @@
+
+sudo apt install libwayland-dev wayland-protocols
+sudo apt install libwayland-dev wayland-protocols libxkbcommon-dev
+mv Engines/Vendors/glfw/deps/wayland Engines/Vendors/glfw/deps/wayland.bak
+sudo apt-get install doxygen graphviz
+cp /usr/share/wayland/wayland.xml Vendors/glfw/deps/wayland/wayland.xml

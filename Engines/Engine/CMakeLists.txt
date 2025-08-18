@@ -16,6 +16,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:include/ViSolEngine>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/Vendors/${platform}/include>
     $<INSTALL_INTERFACE:include/Vendors/${platform}/include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/Vendors/glfw>
+    $<INSTALL_INTERFACE:include/Vendors/glfw/include>
 )
 
 add_library(ViSolEngine::ViSolEngine STATIC IMPORTED)
@@ -25,6 +27,7 @@ set(_IMPORT_PREFIX "${CMAKE_INSTALL_PREFIX}")
 set_target_properties(ViSolEngine::ViSolEngine PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
     INTERFACE_LINK_LIBRARIES spdlog
+    INTERFACE_LINK_LIBRARIES glfw
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC ON_VI_ENGINE DYNAMIC_LIB=0 DYNAMIC_BUILD=0)
@@ -34,20 +37,21 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC ON_VI_ENGINE DYNAMIC_LIB=0 DYN
 # target_include_directories(${PROJECT_NAME} PUBLIC
 # 	${CMAKE_CURRENT_SOURCE_DIR}/ViSolEngine
 #     )
-#	${CMAKE_SOURCE_DIR}/Vendors/include #add file vendor
+#	${CMAKE_SOURCE_DIR}/Vendors/include add file vendor
     #	${CMAKE_SOURCE_DIR}/Vendors/glfw/include
 
 
 # target_link_libraries(${PROJECT_NAME} PUBLIC spdlog )
 ##glfw)
 
-#	${CMAKE_SOURCE_DIR}/Vendors/include/glad/gl.h
+#	
 
 # Check CMake version
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
     message(STATUS "CMake version >= 3.16 detected, enabling PCH")
     target_precompile_headers(${PROJECT_NAME} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/ViSolEngine/pch.h
+        ${CMAKE_SOURCE_DIR}/Vendors/${platform}/include/glad/gl.h
     )
 else()
     message(STATUS "CMake version < 3.16 detected, skipping PCH")
