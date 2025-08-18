@@ -6,8 +6,8 @@
 
 namespace ViSolEngine {
 	struct VISOL_API ApplicationConfiguration {
-		int Width, Height;
-		const char* Title;
+		uint16_t width, height;
+		const char* title;
 	};
 
 	class VISOL_API Application {

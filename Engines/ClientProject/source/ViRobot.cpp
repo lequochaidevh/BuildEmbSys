@@ -23,9 +23,9 @@ public:
 ViSolEngine::Application* ViSolEngine::createApplication() {
 	std::cout << "----- Start CreateApplication -----" << std::endl;
 	ViSolEngine::ApplicationConfiguration appConfig;
-	appConfig.Width = 800;
-	appConfig.Height = 600;
-	appConfig.Title = "ViSolEngine version 1.0.0";
+	appConfig.width = 800;
+	appConfig.height = 600;
+	appConfig.title = "ViSolEngine version 1.0.0";
 
 	return new ViRobot(appConfig);
 }
