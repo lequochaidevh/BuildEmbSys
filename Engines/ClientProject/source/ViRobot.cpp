@@ -4,11 +4,7 @@
 class ViRobot : public ViSolEngine::Application {
 public:
 	ViRobot(const ViSolEngine::ApplicationConfiguration& config) : ViSolEngine::Application(config) {
-		LOG_INFO("Info works");
-		LOG_TRACE("Trace works");
-		LOG_WARN("Warn works");
-		LOG_ERROR("Error works");
-		LOG_CRITICAL("Critical works");
+		LOG_INFO("ViRobot client constructor init");
 	}
 	virtual bool init() override {
 		LOG_INFO("ViRobot is init");

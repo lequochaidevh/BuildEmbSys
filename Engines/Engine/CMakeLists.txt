@@ -14,71 +14,66 @@ add_library(${PROJECT_NAME} STATIC ${SRC_FILES} )
 
 set(platform "x86_64_u20")
 
-target_sources(${PROJECT_NAME} PRIVATE ${GLAD_SRC})
-
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ViSolEngine>
     $<INSTALL_INTERFACE:include/ViSolEngine>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/Vendors/${platform}/include>
-    $<INSTALL_INTERFACE:include/Vendors/${platform}/include>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/Vendors/glfw>
-    $<INSTALL_INTERFACE:include/Vendors/glfw/include>
+    $<INSTALL_INTERFACE:include/GLFW>
 )
-
-# add_library(ViSolEngine::ViSolEngine STATIC IMPORTED)
-
-# set(_IMPORT_PREFIX "${CMAKE_INSTALL_PREFIX}")
-
-# set_target_properties(ViSolEngine::ViSolEngine PROPERTIES
-#     INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
-#     INTERFACE_LINK_LIBRARIES "spdlogglfw"
-# )
-
+#
+#     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/Vendors/${platform}/spdlog>
+#     $<INSTALL_INTERFACE:include/spdlog>
 target_compile_definitions(${PROJECT_NAME} PUBLIC ON_VI_ENGINE DYNAMIC_LIB=0 DYNAMIC_BUILD=0)
 
 # glad pointer loader - openGL
 add_library(glad STATIC
-    ${CMAKE_SOURCE_DIR}/Vendors/glad/src/glad/gl.c
+    "${CMAKE_SOURCE_DIR}/Vendors/${platform}/glad/src/gl.c"
 )
+# Build into libViSolEngine.a
+# target_include_directories(glad PUBLIC
+#     "${CMAKE_SOURCE_DIR}/Vendors/${platform}/include"
+# )
 
+# Build libglad.a of out libViSolEngine.a
 target_include_directories(glad PUBLIC
-    ${CMAKE_SOURCE_DIR}/Vendors/glad/include
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/Vendors/${platform}/include>
+    $<INSTALL_INTERFACE:include/glad>
+    $<INSTALL_INTERFACE:include/KHR>
 )
-
-target_link_libraries(ViSolEngine
-    PUBLIC
-        glfw
-        glad
+add_library(spdlog INTERFACE)
+target_include_directories(spdlog INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/Vendors/${platform}/include>
+    $<INSTALL_INTERFACE:include/spdlog>
 )
-
-        # NOT NEED LINK spdlog 
-# TODO: Will delare public and private include dir
-
-# target_include_directories(${PROJECT_NAME} PUBLIC
-# 	${CMAKE_CURRENT_SOURCE_DIR}/ViSolEngine
-#     )
-#	${CMAKE_SOURCE_DIR}/Vendors/include add file vendor
-    #	${CMAKE_SOURCE_DIR}/Vendors/glfw/include
-
-
-# target_link_libraries(${PROJECT_NAME} PUBLIC spdlog )
-##glfw)
-
-#	
+target_link_libraries(ViSolEngine PUBLIC spdlog)
 
 # Check CMake version
 if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.16")
     message(STATUS "CMake version >= 3.16 detected, enabling PCH")
     target_precompile_headers(${PROJECT_NAME} PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/ViSolEngine/pch.h
+        "${CMAKE_CURRENT_SOURCE_DIR}/ViSolEngine/pch.h"
+        "${CMAKE_SOURCE_DIR}/Vendors/${platform}/include/glad/gl.h"
+        "${CMAKE_SOURCE_DIR}/Vendors/${platform}/include/KHR/khrplatform.h"
     )
 else()
     message(STATUS "CMake version < 3.16 detected, skipping PCH")
 endif()
 
-# Export install target
-install(TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}Targets
+target_link_libraries(ViSolEngine
+    PUBLIC
+        glfw
+        glad
+        )
+        
+        # spdlog
+# To set precompile file and Build into libViSolEngine.a
+# target_link_libraries(ViSolEngine PRIVATE glad)
+# Export install target - export glad to ViSolEngine
+install(TARGETS 
+    ${PROJECT_NAME}
+    glad
+    spdlog
+    EXPORT ${PROJECT_NAME}Targets 
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -87,9 +82,7 @@ install(TARGETS ${PROJECT_NAME}
 
 # Install headers
 # TODO: PUBLIC HEADER FILE
-
-# FILES_MATCHING to not install file cpp
-install(DIRECTORY ViSolEngine/core
+install(DIRECTORY "${PROJECT_NAME}"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.h"
 )
@@ -97,7 +90,7 @@ install(DIRECTORY ViSolEngine/core
 install(EXPORT ${PROJECT_NAME}Targets
     FILE ${PROJECT_NAME}Targets.cmake
     NAMESPACE ViSolEngine::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
 )
 
 # Generate and install the version file
@@ -124,13 +117,19 @@ install(FILES
 )
 
 # Install spdlog static library manually
-install(FILES ${CMAKE_SOURCE_DIR}/Vendors/${platform}/lib/libspdlog.a
+install(FILES "${CMAKE_SOURCE_DIR}/Vendors/${platform}/spdlog/lib/libspdlog.a"
         DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/Vendors/${platform}/include/spdlog
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/Vendors/${platform}/include/"
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
-
+install(TARGETS glad
+    EXPORT gladTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(${PROJECT_NAME} PUBLIC _DEBUG)
 endif()
