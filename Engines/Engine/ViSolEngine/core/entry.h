@@ -4,15 +4,18 @@
 
 
 int main() {
+	ViSolEngine::Logger::init();
+	
 	ViSolEngine::Application* application = ViSolEngine::createApplication();
-	std::cout << "After Create Application" << std::endl;
+	LOG_INFO("After Create Application");
 	if (application->init()) {
 		LOG_INFO("Entry init");
 		application->run();
 	}
 
 	application->shutdown();
-	delete application;
+	VISOL_FREE_MEMORY(application);
 
+	std::cin.get();
 	return 0;
 }
