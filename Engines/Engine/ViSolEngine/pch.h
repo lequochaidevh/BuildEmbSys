@@ -1,6 +1,6 @@
 
 #pragma once
-/*5_Setup Pre-compile header file*/
+/*Setup Pre-compile header file*/
 // Standard Libraty
 #include <memory>
 #include <stdint.h>
@@ -85,16 +85,16 @@ using Unique = std::unique_ptr<T>;
 
 #define INVALID_ID 0
 
-// namespace ViSolEngine
-// {
-//     using UUID = size_t;
+namespace ViSolEngine
+{
+    using UUID = size_t;
 
-//     UUID VI_API getUUID();
+    UUID VISOL_API getUUID();
 
-//     template <typename T>
-//     UUID VI_API getTypeUUID()
-//     {
-//         static UUID uuid = getUUID();
-//         return uuid;
-//     }
-// }
+    template <typename T>
+    UUID VISOL_API getTypeUUID()
+    {
+        static UUID uuid = getUUID(); // static Func call one time
+        return uuid;
+    }
+}

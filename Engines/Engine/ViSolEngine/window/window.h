@@ -2,8 +2,6 @@
 /*1*/
 #include "core/input/inputState.h"
 
-// #include "windowPlatform.h" // Add this include if WindowPlatform is defined in windowPlatform.h
-
 class GLFWwindow;
 namespace ViSolEngine
 {
@@ -14,7 +12,7 @@ namespace ViSolEngine
 		None
 	};
 
-	// struct ApplicationConfiguration; // forward delaration
+	struct ApplicationConfiguration; // Forward delaration
 
 	/*for close source*/
 	class EventDispatcher;
@@ -44,7 +42,7 @@ namespace ViSolEngine
 	class GLFWPlatformWindow : public NativeWindow
 	{
 	public:
-		bool init(const struct ApplicationConfiguration &, EventDispatcher *) override;
+		bool init(const struct ApplicationConfiguration &, EventDispatcher*) override;
 		void shutdown() override;
 		void swapbuffers() override;
 		void pollsEvent() override;

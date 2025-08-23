@@ -14,7 +14,7 @@ namespace ViSolEngine {
 	template <typename T>
 	class VISOL_API EventAction : public IEventAction {
 	public:
-		// add -mCallback: eventCallback<T>
+		// add mCallback: eventCallback<T>
 		EventAction(const eventCallback<T>& callback) : mCallback(callback){}
 		virtual bool execute(const EventContext* eventContext) override {
 			// check type value of eventContext

@@ -1,5 +1,6 @@
 #pragma once 
 
+#include"pch.h"
 #include "eventAction.h"
 
 /*
@@ -11,7 +12,7 @@
 namespace ViSolEngine {
 	/* Create EventActionList (vector) */
 	using EventActionList = std::vector<IEventAction*>;
-
+	using EventID = UUID;
 	class VISOL_API EventDispatcher {
 		friend class Application; // Spec only Application class which can create it
 	public:
@@ -20,17 +21,18 @@ namespace ViSolEngine {
 		template<typename T>
 		void addEventListener(const eventCallback<T>& callback) {
 			VISOL_STATIC_ASSERT(std::is_base_of<EventContext, T>::value && "add invalid EventContext");
-			const char* evenType = typeid(T).name();
+			EventID eventID = getTypeUUID<T>();
+			CORE_LOG_INFO("Create event with ID {0}", eventID);
 			IEventAction* eventAction = new EventAction<T>(callback);
-			mEventActionMap[evenType].emplace_back(eventAction);
+			mEventActionMap[eventID].emplace_back(eventAction);
 		}
 
 		template<typename T>
 		void dispatchListener(const T& evenContext) {
 			VISOL_STATIC_ASSERT(std::is_base_of<EventContext, T>::value && "dispatch invalid EventContext");
-			const char* eventType = typeid(T).name();
-			VISOL_ASSERT(mEventActionMap.find(eventType) != mEventActionMap.end() && "Unknow event type");
-			for (auto eventAction : mEventActionMap.at(eventType)) {
+			EventID eventID = getTypeUUID<T>();
+			VISOL_ASSERT(mEventActionMap.find(eventID) != mEventActionMap.end() && "Unknow event type");
+			for (auto eventAction : mEventActionMap.at(eventID)) {
 				if (eventAction->execute(&evenContext)) {
 					break;
 				}
@@ -39,6 +41,6 @@ namespace ViSolEngine {
 
 	private:
 		EventDispatcher();
-		std::unordered_map<const char*, EventActionList> mEventActionMap; 
+		std::unordered_map<EventID, EventActionList> mEventActionMap;
 	};
 }

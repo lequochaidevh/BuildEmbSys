@@ -5,8 +5,8 @@
 #include "logger/logger.h"
 #include "window/window.h"
 #include "window/windowPlatform.h"
-#include"core/event/eventDispatcher.h"
-#include"core/input/inputState.h"
+#include "core/event/eventDispatcher.h"
+#include "core/input/inputState.h"
 namespace ViSolEngine {
 	struct VISOL_API ApplicationConfiguration {
 		uint16_t width, height;

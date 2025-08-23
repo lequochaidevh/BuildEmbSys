@@ -1,7 +1,6 @@
 #pragma once
 
 #include "window.h"
-#include "core/input/inputState.h"
 namespace ViSolEngine {
 	// Factory class
 	class  WindowPlatform

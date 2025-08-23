@@ -9,12 +9,12 @@ namespace ViSolEngine
 
 		switch (spec)
 		{
+		case ViSolEngine::EWindowPlatformSpec::GLFW:
+			window = new GLFWPlatformWindow();
 		case ViSolEngine::EWindowPlatformSpec::SDL:
 			VISOL_ASSERT("SDL Window not supported");
 		case ViSolEngine::EWindowPlatformSpec::None:
 			VISOL_ASSERT("Unknown Window detected");
-		case ViSolEngine::EWindowPlatformSpec::GLFW:
-			window = new GLFWPlatformWindow();
 		default:
 			VISOL_ASSERT("Unknown Window detected");
 		}
