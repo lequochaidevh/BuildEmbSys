@@ -8,15 +8,23 @@
 
 namespace ViSolEngine
 {
-    Application::Application(const ApplicationConfiguration &config) : mConfig(config)
+    Application::Application(const ApplicationConfiguration &config) : 
+        mConfig(config) , mEventDispatcher()
     {
         mNativeWindow.reset(WindowPlatform::create(config.eWindowSpec));
-        if (!mNativeWindow->init(config))
-        {
-            CORE_LOG_CRITICAL("mNativeWindow init failed");
-            return;
-        }
     }
+
+    bool Application::init() {
+		
+		if (!mNativeWindow->init(mConfig, &mEventDispatcher)) {
+			CORE_LOG_CRITICAL("Window spec created failed");
+			return false;
+		}
+
+		mEventDispatcher.addEventListener<WindowResizedEvent>(BIND_EVENT_FUNCTION(onWindowResizedEvent));
+
+		return true;
+	}
 
     void Application::run()
     {
@@ -31,12 +39,17 @@ namespace ViSolEngine
         }
 
         onShutdownClient();
-        //     if (glfwInit())
-        //     {
-        //         CORE_LOG_INFO("GLFW Init successfully");
-        //     }
     }
+
     void Application::shutdown() {
 		mNativeWindow->shutdown();
 	}
+
+    bool Application::onWindowResizedEvent(const WindowResizedEvent& windowResizedEvent) {
+        CORE_LOG_TRACE("Window resize --- width: {} --- height: {}",
+               windowResizedEvent.getWidth(),
+               windowResizedEvent.getHeight());
+        return true;
+    }
+
 }

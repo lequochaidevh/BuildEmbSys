@@ -4,6 +4,7 @@
 #include "spdlog/spdlog.h"
 #include "logger/logger.h"
 #include "window/window.h"
+#include"core/event/eventDispatcher.h"
 
 namespace ViSolEngine {
 	struct VISOL_API ApplicationConfiguration {
@@ -15,7 +16,7 @@ namespace ViSolEngine {
 	class VISOL_API Application {
 	public:
 		virtual ~Application() = default;
-		virtual bool init() { return true; }
+		virtual bool init();
 		virtual bool onInitClient() = 0;
 		void run();
 		virtual void onShutdownClient() = 0;
@@ -24,8 +25,11 @@ namespace ViSolEngine {
 		Application() = default;
 		Application(const ApplicationConfiguration&);
 	private:
+		bool onWindowResizedEvent(const WindowResizedEvent&);
+	private:
 		ApplicationConfiguration mConfig;
 		Unique<NativeWindow> mNativeWindow;
+		EventDispatcher mEventDispatcher;
 	};
 
 	extern Application* createApplication();

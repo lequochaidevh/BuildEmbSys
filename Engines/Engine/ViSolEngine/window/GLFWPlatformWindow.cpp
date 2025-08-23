@@ -6,7 +6,6 @@
 #define GLFW_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #include<GLFW/glfw3.h>
-
 namespace ViSolEngine {
 	GLFWPlatformWindow::GLFWPlatformWindow() : mWindow(nullptr) {
         CORE_LOG_INFO("Call constructure GLFW");
@@ -14,7 +13,8 @@ namespace ViSolEngine {
 	GLFWPlatformWindow::~GLFWPlatformWindow() {
 		
 	}
-	bool GLFWPlatformWindow::init(const ApplicationConfiguration& config) {
+	/*Close source by pointer*/
+	bool GLFWPlatformWindow::init(const ApplicationConfiguration& config, EventDispatcher* pEventDispatcher) {
 		if (!glfwInit()) {
 			CORE_LOG_CRITICAL("GLFW Init failed");
 			glfwTerminate();
@@ -37,6 +37,18 @@ namespace ViSolEngine {
 		
 		glfwMakeContextCurrent(mWindow);
 
+		mData.pEventDispatcher = pEventDispatcher;
+		glfwSetWindowUserPointer(mWindow, &mData);
+		glfwSetWindowSizeCallback(mWindow, [](GLFWwindow* window, int width, int height) {
+			glViewport(0, 0, width, height);
+			//get data* from EventDispatcher
+			windownData_t* data = (windownData_t*)glfwGetWindowUserPointer(window);
+			data->width = width;
+			data->height = height;
+			WindowResizedEvent eventContext(width, height);
+			data->pEventDispatcher->dispatchListener<WindowResizedEvent>(eventContext);
+		});
+		
 		//Check to see if window can successfully interact
 		if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress)) {
 			CORE_LOG_CRITICAL("Glad load failed");

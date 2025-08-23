@@ -8,11 +8,19 @@ namespace ViSolEngine {
 		SDL,
 		None
 	};
+
+	/*for close source*/
+	class EventDispatcher;
+
+	typedef struct windownData_t {
+		int32_t width, height;
+		EventDispatcher* pEventDispatcher;
+	} windownData_t;
 	class NativeWindow
 	{
 	public:
 		virtual ~NativeWindow() = default;
-		virtual bool init(const struct ApplicationConfiguration&) = 0;
+		virtual bool init(const struct ApplicationConfiguration&, EventDispatcher*) = 0;
 		virtual void shutdown() = 0;
 		virtual void swapbuffers() = 0;
 		virtual void pollsEvent() = 0;
@@ -27,7 +35,7 @@ namespace ViSolEngine {
 	class GLFWPlatformWindow : public NativeWindow
 	{
 	public:
-		virtual bool init(const struct ApplicationConfiguration&) override;
+		virtual bool init(const struct ApplicationConfiguration&, EventDispatcher*) override;
 		virtual void shutdown() override;
 		virtual void swapbuffers() override;
 		virtual void pollsEvent() override;
@@ -37,6 +45,7 @@ namespace ViSolEngine {
 		~GLFWPlatformWindow();
 	private:
 		GLFWwindow* mWindow;
+		windownData_t mData;
 	protected:
 	};
 	
