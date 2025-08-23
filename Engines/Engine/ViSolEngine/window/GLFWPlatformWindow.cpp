@@ -7,11 +7,13 @@
 #include <glad/gl.h>
 #include<GLFW/glfw3.h>
 namespace ViSolEngine {
-	GLFWPlatformWindow::GLFWPlatformWindow() : mWindow(nullptr) {
-        CORE_LOG_INFO("Call constructure GLFW");
+	GLFWPlatformWindow::GLFWPlatformWindow() : mWindow(nullptr) , mData() {
+		CORE_LOG_INFO("Call constructure GLFW");
 	}
 	GLFWPlatformWindow::~GLFWPlatformWindow() {
-		
+		/*Free keyboard and mouse input (mData)*/
+		VISOL_FREE_MEMORY(mData.input.Keyboard);
+		VISOL_FREE_MEMORY(mData.input.Mouse);
 	}
 	/*Close source by pointer*/
 	bool GLFWPlatformWindow::init(const ApplicationConfiguration& config, EventDispatcher* pEventDispatcher) {
@@ -36,8 +38,10 @@ namespace ViSolEngine {
 		CORE_LOG_INFO("Window created success");
 		
 		glfwMakeContextCurrent(mWindow);
-
+		
+		//because the lambda not capture data by reference
 		mData.pEventDispatcher = pEventDispatcher;
+
 		glfwSetWindowUserPointer(mWindow, &mData);
 		glfwSetWindowSizeCallback(mWindow, [](GLFWwindow* window, int width, int height) {
 			glViewport(0, 0, width, height);
@@ -48,6 +52,50 @@ namespace ViSolEngine {
 			WindowResizedEvent eventContext(width, height);
 			data->pEventDispatcher->dispatchListener<WindowResizedEvent>(eventContext);
 		});
+
+
+		/*Create Input - Allocate memory heap*/
+		mData.input.Keyboard = WindowPlatform::createKeyboard(config.eWindowSpec, mWindow);
+		mData.input.Mouse = WindowPlatform::createMouse(config.eWindowSpec, mWindow);
+		/*GLFW Set Callback Mouse and Keyboard*/
+		glfwSetKeyCallback(mWindow, [](GLFWwindow* window, int keyCode, int scanCode, int action, int mods) {
+			windownData_t* data = (windownData_t*)glfwGetWindowUserPointer(window);
+			if (action == GLFW_PRESS) {
+				data->pEventDispatcher->dispatchListener<KeyPressedEvent>({ keyCode });
+			}
+			else if (action == GLFW_REPEAT) {
+				data->pEventDispatcher->dispatchListener<KeyHeldEvent>({ keyCode });
+			}
+			else if (action == GLFW_RELEASE) {
+				data->pEventDispatcher->dispatchListener<KeyReleasedEvent>({ keyCode });
+			}
+			});
+		glfwSetMouseButtonCallback(mWindow, [](GLFWwindow* window, int button, int action, int mods) {
+			windownData_t* data = (windownData_t*)glfwGetWindowUserPointer(window);
+			if (action == GLFW_PRESS) {
+				data->pEventDispatcher->dispatchListener<MouseButtonPressedEvent>({ button });
+			}
+			else if (action == GLFW_RELEASE) {
+				data->pEventDispatcher->dispatchListener<MouseButtonReleasedEvent>({ button });
+			}
+			});
+		glfwSetCursorPosCallback(mWindow, [](GLFWwindow* window, double positionX, double positionY) {
+			windownData_t* data = (windownData_t*)glfwGetWindowUserPointer(window);
+			static double lastFrameX = positionX;
+			static double lastFrameY = positionY;
+			double offsetX = positionX - lastFrameX;
+			double offsetY = positionY - lastFrameY;
+			data->pEventDispatcher->dispatchListener<MouseMovedEvent>({ positionX, positionY, offsetX, offsetY });
+			data->input.Mouse->setPosition(positionX, positionY);
+			data->input.Mouse->setOffset(offsetX, offsetY);
+			lastFrameX = positionX;
+			lastFrameY = positionY;
+			});
+		glfwSetScrollCallback(mWindow, [](GLFWwindow* window, double scrollX, double scrollY) {
+			windownData_t* data = (windownData_t*)glfwGetWindowUserPointer(window);
+			data->pEventDispatcher->dispatchListener<MouseScrolledEvent>({ scrollX, scrollY });
+			data->input.Mouse->setScroll(scrollX, scrollY);
+			});
 		
 		//Check to see if window can successfully interact
 		if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress)) {
@@ -72,5 +120,10 @@ namespace ViSolEngine {
 	}
 	bool GLFWPlatformWindow::shouldClose() {
 		return glfwWindowShouldClose(mWindow);
+	}
+
+	/*Allow pointer*/
+	InputState* GLFWPlatformWindow::getInputState() {
+		return &mData.input;
 	}
 }

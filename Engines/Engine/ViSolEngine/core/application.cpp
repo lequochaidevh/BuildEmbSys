@@ -22,6 +22,15 @@ namespace ViSolEngine
 		}
 
 		mEventDispatcher.addEventListener<WindowResizedEvent>(BIND_EVENT_FUNCTION(onWindowResizedEvent));
+        /*set new heap --- Set value mInputState*/
+        mInputState = mNativeWindow->getInputState();
+        mEventDispatcher.addEventListener<KeyHeldEvent>(BIND_EVENT_FUNCTION(onKeyHeldEvent));
+		mEventDispatcher.addEventListener<KeyReleasedEvent>(BIND_EVENT_FUNCTION(onKeyReleasedEvent));
+		mEventDispatcher.addEventListener<MouseMovedEvent>(BIND_EVENT_FUNCTION(onMouseMovedEvent));
+		mEventDispatcher.addEventListener<MouseScrolledEvent>(BIND_EVENT_FUNCTION(onMouseScrolledEvent));
+		mEventDispatcher.addEventListener<MouseButtonPressedEvent>(BIND_EVENT_FUNCTION(onMouseButtonPressedEvent));
+		mEventDispatcher.addEventListener<MouseButtonHeldEvent>(BIND_EVENT_FUNCTION(onMouseButtonHeldEvent));
+		mEventDispatcher.addEventListener<MouseButtonReleasedEvent>(BIND_EVENT_FUNCTION(onMouseButtonReleasedEvent));
 
 		return true;
 	}
@@ -51,5 +60,45 @@ namespace ViSolEngine
                windowResizedEvent.getHeight());
         return true;
     }
+
+    bool Application::onKeyPressedEvent(const KeyPressedEvent& eventContext) {
+		CORE_LOG_TRACE("Key {} is pressed", (char)eventContext.getKeyCode());
+		return false;
+	}
+
+	bool Application::onKeyHeldEvent(const KeyHeldEvent& eventContext) {
+		CORE_LOG_TRACE("Key {} is held", (char)eventContext.getKeyCode());
+		return false;
+	}
+
+	bool Application::onKeyReleasedEvent(const KeyReleasedEvent& eventContext) {
+		CORE_LOG_TRACE("Key {} is released", (char)eventContext.getKeyCode());
+		return false;
+	}
+
+	bool Application::onMouseMovedEvent(const MouseMovedEvent& eventContext) {
+		CORE_LOG_TRACE("Mouse position: {}, {}. Mouse relative: {}, {}", eventContext.getPositionX(), eventContext.getPositionY(), eventContext.getOffsetX(), eventContext.getOffsetY());
+		return false;
+	}
+
+	bool Application::onMouseScrolledEvent(const MouseScrolledEvent& eventContext) {
+		CORE_LOG_TRACE("Mouse scroll X: {}, Mouse Scroll Y: {}", eventContext.getScrollX(), eventContext.getScrollY());
+		return false;
+	}
+
+	bool Application::onMouseButtonPressedEvent(const MouseButtonPressedEvent& eventContext) {
+		CORE_LOG_TRACE("Mouse button {} is pressed", eventContext.getButton());
+		return false;
+	}
+
+	bool Application::onMouseButtonHeldEvent(const MouseButtonHeldEvent& eventContext) {
+		CORE_LOG_TRACE("Mouse button {} is held", eventContext.getButton());
+		return false;
+	}
+
+	bool Application::onMouseButtonReleasedEvent(const MouseButtonReleasedEvent& eventContext) {
+		CORE_LOG_TRACE("Mouse button {} is released", eventContext.getButton());
+		return false;
+	}
 
 }
